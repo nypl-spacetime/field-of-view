@@ -2,6 +2,8 @@
 
 JavaScript library which creates photo fields of view from GeoJSON files
 
+![](screenshot.png)
+
 ## Installation
 
     npm install nypl-spacetime/field-of-view
@@ -10,7 +12,7 @@ JavaScript library which creates photo fields of view from GeoJSON files
 
 Single GeoJSON features:
 
-```
+```js
 var fieldOfView = require('field-of-view')
 var feature = {
   type: 'Feature',
