@@ -1,0 +1,31 @@
+{
+  "name": "field-of-view",
+  "version": "0.0.1",
+  "description": "Creates photo fields of view from GeoJSON files",
+  "main": "index.js",
+  "bin": {
+    "field-of-view": "cli.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nypl-spacetime/field-of-view"
+  },
+  "scripts": {
+    "lint": "standard",
+    "docs-readme": "documentation-readme -s API",
+    "test": "npm run lint && tap --cov test/*.js"
+  },
+  "author": "Bert Spaan",
+  "license": "MIT",
+  "dependencies": {
+    "JSONStream": "^1.0.7",
+    "highland": "^2.5.1",
+    "minimist": "^1.2.0",
+    "turf": "^2.0.2"
+  },
+  "devDependencies": {
+    "documentation-readme": "^2.0.0",
+    "standard": "^5.4.1",
+    "tap": "^2.1.1"
+  }
+}
