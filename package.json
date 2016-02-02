@@ -21,7 +21,10 @@
     "JSONStream": "^1.0.7",
     "highland": "^2.5.1",
     "minimist": "^1.2.0",
-    "turf": "^2.0.2"
+    "turf-bearing": "^1.0.2",
+    "turf-centroid": "^1.1.3",
+    "turf-destination": "^1.2.1",
+    "turf-distance": "^1.1.0"
   },
   "devDependencies": {
     "documentation-readme": "^2.0.0",

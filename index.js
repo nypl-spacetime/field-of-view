@@ -1,8 +1,12 @@
 'use strict'
 
 var H = require('highland')
-var turf = require('turf')
-
+var turf = {
+  destination: require('turf-destination'),
+  centroid: require('turf-centroid'),
+  bearing: require('turf-bearing'),
+  distance: require('turf-distance')
+}
 var unit = 'kilometers'
 
 function tanDeg (deg) {
