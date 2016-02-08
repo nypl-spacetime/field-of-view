@@ -1,6 +1,6 @@
 {
   "name": "field-of-view",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Creates photo fields of view from GeoJSON files",
   "main": "index.js",
   "bin": {

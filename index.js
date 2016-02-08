@@ -32,7 +32,7 @@ function checkFeatures (feature, options) {
 
   var geometryType = feature.geometry.type
 
-  if (!angle) {
+  if (angle !== undefined) {
     throw new Error('feature must include angle property, or global angle option must be set')
   }
 
@@ -61,7 +61,7 @@ function checkFeatures (feature, options) {
       throw new Error('only accepts GeometryCollections containing two Points')
     }
   } else if (geometryType === 'Point') {
-    if (properties.bearing && properties.distance) {
+    if (properties.bearing !== undefined && properties.distance !== undefined) {
       return feature
     } else {
       throw new Error('only accepts single Points with distance and bearing properties')
