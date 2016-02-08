@@ -32,7 +32,7 @@ function checkFeatures (feature, options) {
 
   var geometryType = feature.geometry.type
 
-  if (angle !== undefined) {
+  if (angle === undefined) {
     throw new Error('feature must include angle property, or global angle option must be set')
   }
 
