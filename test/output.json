@@ -64,6 +64,37 @@
           }
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "angle": 50,
+        "bearing": 60.07981853471892,
+        "distance": 28.989863285960784
+      },
+      "geometry":{
+        "type": "GeometryCollection",
+        "geometries": [
+          {
+            "type": "Point",
+            "coordinates": [
+              4.90028,
+              52.37249
+            ]
+          }, {
+            "type": "LineString",
+            "coordinates": [
+              [
+                4.900749291118365,
+                52.37251466365281
+              ], [
+                4.90055070840803,
+                52.37272533626398
+              ]
+            ]
+          }
+        ]
+      }
     }
   ]
 }

@@ -1,17 +1,20 @@
 'use strict'
 
-var H = require('highland')
-var turf = {
-  destination: require('turf-destination'),
-  centroid: require('turf-centroid'),
-  bearing: require('turf-bearing'),
-  distance: require('turf-distance')
-}
-var unit = 'kilometers'
+import turfDestination from '@turf/destination'
+import turfCentroid from '@turf/centroid'
+import turfBearing from '@turf/bearing'
+import turfDistance from '@turf/distance'
+
+var units = 'meters'
 
 function tanDeg (deg) {
   var rad = deg * Math.PI / 180
   return Math.tan(rad)
+}
+
+function cosDeg (deg) {
+  var rad = deg * Math.PI / 180
+  return Math.cos(rad)
 }
 
 function getNested (feature, options) {
@@ -44,19 +47,9 @@ function checkFeatures (feature, options) {
     }
   } else if (geometryType === 'GeometryCollection') {
     if (feature.geometry.geometries.length === 2 &&
-      feature.geometry.geometries[0].type === 'Point' &&
-      feature.geometry.geometries[1].type === 'Point') {
-      return {
-        type: 'Feature',
-        properties: feature.properties,
-        geometry: {
-          type: 'LineString',
-          coordinates: [
-            feature.geometry.geometries[0].coordinates,
-            feature.geometry.geometries[1].coordinates
-          ]
-        }
-      }
+        feature.geometry.geometries[0].type === 'Point' &&
+        feature.geometry.geometries[1].type === 'Point') {
+      return feature
     } else {
       throw new Error('only accepts GeometryCollections containing two Points')
     }
@@ -78,22 +71,24 @@ function processFeature (feature, options) {
     return processPoint(feature, options)
   } else if (geometryType === 'LineString') {
     return processLineString(feature, options)
+  } else if (geometryType === 'GeometryCollection') {
+    return processGeometryCollection(feature, options)
   }
 }
 
 function processPoint (feature, options) {
   var properties = getNested(feature, options)
 
-  var distance = properties.distance / 1000
+  var distance = properties.distance
   var angle = properties.angle || options.angle
 
-  var centroid = turf.destination(feature, distance, properties.bearing, unit)
+  var centroid = turfDestination(feature, distance, properties.bearing, units)
 
   var distCentroid = tanDeg(angle / 2) * distance
 
   var points = [
-    turf.destination(centroid, distCentroid, properties.bearing + 90, unit),
-    turf.destination(centroid, -distCentroid, properties.bearing + 90, unit)
+    turfDestination(centroid, distCentroid, properties.bearing + 90, units),
+    turfDestination(centroid, -distCentroid, properties.bearing + 90, units)
   ]
 
   return {
@@ -119,7 +114,7 @@ function processLineString (feature, options) {
   var properties = getNested(feature, options)
   var angle = properties.angle || options.angle
 
-  var centroid = turf.centroid(feature)
+  var centroid = turfCentroid(feature)
 
   var points = feature.geometry.coordinates.map(function (coordinate) {
     return {
@@ -131,11 +126,11 @@ function processLineString (feature, options) {
     }
   })
 
-  var distCentroid = turf.distance(points[0], centroid, unit)
-  var bearing = turf.bearing(points[0], points[1])
+  var distCentroid = turfDistance(points[0], centroid, units)
+  var bearing = turfBearing(points[0], points[1])
 
   var distCamera = distCentroid / tanDeg(angle / 2)
-  var camera = turf.destination(centroid, distCamera, bearing + 90, unit)
+  var camera = turfDestination(centroid, distCamera, bearing + 90, units)
 
   return {
     type: 'Feature',
@@ -150,22 +145,45 @@ function processLineString (feature, options) {
   }
 }
 
-module.exports.fromFeature = function (feature, options) {
+function processGeometryCollection (feature, options) {
+  var properties = getNested(feature, options)
+  var angle = properties.angle || options.angle
+
+  var camera = feature.geometry.geometries[0]
+  var centroid = feature.geometry.geometries[1]
+
+  var distance = turfDistance(camera, centroid, units)
+  var bearing = turfBearing(camera, centroid)
+
+  var distFieldOfViewCorner = distance / cosDeg(angle / 2)
+
+  var fieldOfViewPoint1 = turfDestination(camera, distFieldOfViewCorner, bearing + angle / 2, units)
+  var fieldOfViewPoint2 = turfDestination(camera, distFieldOfViewCorner, bearing - angle / 2, units)
+
+  return {
+    type: 'Feature',
+    properties: Object.assign(feature.properties, {
+      bearing: bearing,
+      distance: distance
+    }),
+    geometry: {
+      type: 'GeometryCollection',
+      geometries: [
+        camera,
+        {
+          type: 'LineString',
+          coordinates: [
+            fieldOfViewPoint1.geometry.coordinates,
+            fieldOfViewPoint2.geometry.coordinates
+          ]
+        }
+      ]
+    }
+  }
+}
+
+export function fromFeature (feature, options) {
   options = options || {}
   feature = checkFeatures(feature, options)
   return processFeature(feature, options)
-}
-
-module.exports.fromStream = function (options) {
-  options = options || {}
-  var curriedCheckFeatures = H.flip(checkFeatures, options)
-  var curriedProcessFeature = H.flip(processFeature, options)
-
-  return H.pipeline(
-    H.map(curriedCheckFeatures),
-    H.stopOnError(function (err) {
-      console.error('Error:', err.message)
-    }),
-    H.map(curriedProcessFeature)
-  )
 }

@@ -1,22 +1,19 @@
 'use strict'
 
-var fs = require('fs')
-var H = require('highland')
-var test = require('tap').test
-var JSONStream = require('JSONStream')
-var fieldOfView = require('../')
+const fieldOfView = require('./../build/field-of-view.node.js')
+const test = require('tap').test
 
-var inputStream = fs.createReadStream('./test/input.geojson')
-  .pipe(JSONStream.parse('features.*'))
+const inputFeatures = require('./input.json').features
+const outputFeatures = require('./output.json').features
 
-var outputStream = fs.createReadStream('./test/output.geojson')
-  .pipe(JSONStream.parse('features.*'))
+const stringify = (obj) => JSON.stringify(obj, (key, val) =>
+  val.toFixed ? Number(val.toFixed(13)) : val
+)
 
-H([H(inputStream), H(outputStream)])
-  .zipAll0()
-  .each(function (pair) {
+inputFeatures
+  .forEach((inputFeature, i) => {
     test('field-of-view', function (t) {
-      t.same(fieldOfView.fromFeature(pair[0]), pair[1])
+      t.same(stringify(fieldOfView.fromFeature(inputFeature)), stringify(outputFeatures[i]))
       t.end()
     })
   })

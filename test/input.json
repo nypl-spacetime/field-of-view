@@ -34,6 +34,31 @@
           ]
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "angle": 50
+      },
+      "geometry": {
+        "type": "GeometryCollection",
+        "geometries": [
+          {
+            "type": "Point",
+            "coordinates": [
+              4.90028,
+              52.37249
+            ]
+          },
+          {
+            "type": "Point",
+            "coordinates": [
+              4.90065,
+              52.37262
+            ]
+          }
+        ]
+      }
     }
   ]
 }
