@@ -8,7 +8,7 @@ export default {
   dest: 'dist/field-of-view.min.js',
   format: 'iife',
   moduleName: 'fieldOfView',
-  sourceMap: false,
+  sourceMap: true,
   plugins: [
     nodeResolve({
       jsnext: true,
