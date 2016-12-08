@@ -1,13 +1,16 @@
 {
   "name": "field-of-view",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Creates photo fields of view from GeoJSON files",
   "main": "build/field-of-view.node.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/nypl-spacetime/field-of-view"
   },
-  "browser": "build/field-of-view.js",
+  "files": [
+    "dist"
+  ],
+  "browser": "dist/field-of-view.min.js",
   "module": "index",
   "jsnext:main": "index",
   "scripts": {
