@@ -7,7 +7,7 @@ __field-of-view__ is a JavaScript library to create photo [fields of view](https
 - [Street View, Then & Now: New York City's Fifth Avenue](http://publicdomain.nypl.org/fifth-avenue/)
 
 
-field-of-view is developed for [NYPL](https://www.nypl.org/)'s [NYC Space/Time Directory](http://spacetime.nypl.org/).
+field-of-view is developed for The New York Public Library's [NYC Space/Time Directory](http://spacetime.nypl.org/).
 
 ## Input
 
@@ -141,6 +141,7 @@ See the [Output section](#output) for an example.
 
 ## See also
 
+- http://spacetime.nypl.org/
 - https://github.com/nypl-spacetime/Leaflet.GeotagPhoto
 - https://github.com/nypl-spacetime/surveyor
 - http://turfjs.org/
