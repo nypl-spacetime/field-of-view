@@ -5,7 +5,7 @@ import commonjs from 'rollup-plugin-commonjs'
 
 export default {
   entry: 'index.js',
-  dest: 'build/field-of-view.min.js',
+  dest: 'dist/field-of-view.min.js',
   format: 'iife',
   moduleName: 'fieldOfView',
   sourceMap: false,
