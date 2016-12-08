@@ -1,6 +1,6 @@
 {
   "name": "field-of-view",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Creates photo fields of view from GeoJSON files",
   "repository": {
     "type": "git",
@@ -8,7 +8,8 @@
   },
   "files": [
     "dist",
-    "field-of-view.png"
+    "field-of-view.png",
+    "index.js"
   ],
   "main": "dist/field-of-view.node.js",
   "browser": "dist/field-of-view.min.js",
