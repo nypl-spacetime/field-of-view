@@ -150,15 +150,15 @@ function processGeometryCollection (feature, options) {
   var angle = properties.angle || options.angle
 
   var camera = feature.geometry.geometries[0]
-  var centroid = feature.geometry.geometries[1]
+  var target = feature.geometry.geometries[1]
 
-  var distance = turfDistance(camera, centroid, units)
-  var bearing = turfBearing(camera, centroid)
+  var distance = turfDistance(camera, target, units)
+  var bearing = turfBearing(camera, target)
 
   var distFieldOfViewCorner = distance / cosDeg(angle / 2)
 
-  var fieldOfViewPoint1 = turfDestination(camera, distFieldOfViewCorner, bearing + angle / 2, units)
-  var fieldOfViewPoint2 = turfDestination(camera, distFieldOfViewCorner, bearing - angle / 2, units)
+  var fieldOfViewPoint1 = turfDestination(camera, distFieldOfViewCorner, bearing - angle / 2, units)
+  var fieldOfViewPoint2 = turfDestination(camera, distFieldOfViewCorner, bearing + angle / 2, units)
 
   return {
     type: 'Feature',

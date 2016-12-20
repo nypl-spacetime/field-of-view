@@ -1,6 +1,6 @@
 'use strict'
 
-const fieldOfView = require('./../build/field-of-view.node.js')
+const fieldOfView = require('./../dist/field-of-view.node.js')
 const test = require('tap').test
 
 const inputFeatures = require('./input.json').features

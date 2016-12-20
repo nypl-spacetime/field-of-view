@@ -1,6 +1,6 @@
 {
   "name": "field-of-view",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Creates photo fields of view from GeoJSON files",
   "repository": {
     "type": "git",
