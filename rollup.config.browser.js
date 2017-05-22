@@ -13,7 +13,7 @@ export default {
     nodeResolve({
       jsnext: true,
       main: true,
-      browser: true,
+      browser: true
     }),
     commonjs(),
     babel({

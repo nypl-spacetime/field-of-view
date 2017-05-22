@@ -1,9 +1,13 @@
-'use strict'
-
 import turfDestination from '@turf/destination'
 import turfCentroid from '@turf/centroid'
 import turfBearing from '@turf/bearing'
 import turfDistance from '@turf/distance'
+
+export function fromFeature (feature, options) {
+  options = options || {}
+  feature = checkFeatures(feature, options)
+  return processFeature(feature, options)
+}
 
 var units = 'meters'
 
@@ -18,7 +22,7 @@ function cosDeg (deg) {
 }
 
 function getNested (feature, options) {
-  var properties = feature.properties
+  var properties = feature.properties || {}
   if (options.nested) {
     if (properties[options.nested]) {
       properties = properties[options.nested]
@@ -34,6 +38,15 @@ function checkFeatures (feature, options) {
   var angle = properties.angle || options.angle
 
   var geometryType = feature.geometry.type
+
+  if (geometryType === 'GeometryCollection') {
+    if (feature.geometry.geometries.length === 3 &&
+        feature.geometry.geometries[0].type === 'Point' &&
+        feature.geometry.geometries[1].type === 'Point' &&
+        feature.geometry.geometries[2].type === 'Point') {
+      return feature
+    }
+  }
 
   if (angle === undefined) {
     throw new Error('feature must include angle property, or global angle option must be set')
@@ -61,7 +74,8 @@ function checkFeatures (feature, options) {
     }
   } else {
     throw new Error('only accepts LineStrings with two points, GeometryCollections \n' +
-      'containing two Points, or single Points with distance and bearing properties')
+      'containing two Points, or single Points with distance and bearing properties\n' +
+      ' - without the angle property set, GeometryCollections with three Points are accepted')
   }
 }
 
@@ -146,24 +160,33 @@ function processLineString (feature, options) {
 }
 
 function processGeometryCollection (feature, options) {
-  var properties = getNested(feature, options)
-  var angle = properties.angle || options.angle
+  var points = feature.geometry.geometries
 
-  var camera = feature.geometry.geometries[0]
-  var target = feature.geometry.geometries[1]
+  var camera = points[0]
+  var target = points[1]
+  var targetBearing = turfBearing(camera, target)
+
+  var angle
+
+  if (points.length === 2) {
+    var properties = getNested(feature, options)
+    angle = properties.angle || options.angle
+  } else {
+    var angleBearing = turfBearing(camera, points[2])
+    angle = (Math.abs(angleBearing - targetBearing) * 2) % 180
+  }
 
   var distance = turfDistance(camera, target, units)
-  var bearing = turfBearing(camera, target)
-
   var distFieldOfViewCorner = distance / cosDeg(angle / 2)
 
-  var fieldOfViewPoint1 = turfDestination(camera, distFieldOfViewCorner, bearing - angle / 2, units)
-  var fieldOfViewPoint2 = turfDestination(camera, distFieldOfViewCorner, bearing + angle / 2, units)
+  var fieldOfViewPoint1 = turfDestination(camera, distFieldOfViewCorner, targetBearing - angle / 2, units)
+  var fieldOfViewPoint2 = turfDestination(camera, distFieldOfViewCorner, targetBearing + angle / 2, units)
 
   return {
     type: 'Feature',
-    properties: Object.assign(feature.properties, {
-      bearing: bearing,
+    properties: Object.assign({}, feature.properties, {
+      angle: angle,
+      bearing: targetBearing,
       distance: distance
     }),
     geometry: {
@@ -180,10 +203,4 @@ function processGeometryCollection (feature, options) {
       ]
     }
   }
-}
-
-export function fromFeature (feature, options) {
-  options = options || {}
-  feature = checkFeatures(feature, options)
-  return processFeature(feature, options)
 }

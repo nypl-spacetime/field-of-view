@@ -14,6 +14,7 @@ field-of-view is developed for The New York Public Library's [NYC Space/Time Dir
 - `Point`: camera location
 - `LineString` with two points: field of view
 - `GeometryCollection` with two `Point` geometries: camera and target locations
+- `GeometryCollection` with three `Point` geometries: camera and target locations, and a point to determine the angle of the field-of-view
 
 See the [API section](#api) for more details.
 
@@ -122,8 +123,12 @@ Converts `feature` to Field of View geometry; `feature` must be one of the follo
 - `GeometryCollection` with two `Point` geometries
   1. Point location of the camera
   2. Point location of the camera's target
+- `GeometryCollection` with three `Point` geometries
+  1. Point location of the camera
+  2. Point location of the camera's target
+  3. Point determining the angle of the field-of-view
 
-In all cases, features must specify the camera's [angle of view](https://en.wikipedia.org/wiki/Angle_of_view) by setting `properties.angle`, or by passing the `angle` as an option to the `field-of-view` module:
+__In all cases except the last__, features must specify the camera's [angle of view](https://en.wikipedia.org/wiki/Angle_of_view) by setting `properties.angle`, or by passing the `angle` as an option to the `field-of-view` module:
 
 ```js
 const options = {
