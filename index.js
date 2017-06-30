@@ -173,7 +173,13 @@ function processGeometryCollection (feature, options) {
     angle = properties.angle || options.angle
   } else {
     var angleBearing = turfBearing(camera, points[2])
-    angle = (Math.abs(angleBearing - targetBearing) * 2) % 180
+    var bearingDiff = (angleBearing - targetBearing + 360) % 180
+
+    if (bearingDiff < 90) {
+      angle = bearingDiff * 2
+    } else {
+      angle = (180 - bearingDiff) * 2
+    }
   }
 
   var distance = turfDistance(camera, target, units)

@@ -1,6 +1,6 @@
 {
   "name": "field-of-view",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Creates photo fields of view from GeoJSON files",
   "repository": {
     "type": "git",
@@ -19,7 +19,8 @@
     "pretest": "rimraf dist && mkdir dist && npm run build",
     "build": "./node_modules/.bin/rollup -c rollup.config.browser.js && ./node_modules/.bin/rollup -c rollup.config.node.js",
     "test": "npm run lint && tap test/*.js",
-    "lint": "standard index.js test/index.js"
+    "lint": "standard index.js test/index.js",
+    "prepublish": "npm run test"
   },
   "author": "Bert Spaan",
   "license": "MIT",
